@@ -1,2 +1,2 @@
-# sublimetext3_perl6_plugin
+# SublimeText3 Perl6 Plugin
 Perl6 Syntax For Sublime Text
