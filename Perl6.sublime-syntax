@@ -1,0 +1,47 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+name: Perl6
+file_extensions:
+  - [pm6, p6]
+scope: source.perl6
+first_line_match: use v6;
+
+contexts:
+  main:
+    - match: \b(if|unless|with|for|given|loop)\b
+      scope: keyword.control.perl6
+    - match: '"'
+      push: string
+    - match: \b(sub)\b
+      scope: meta.function.perl6
+      captures:
+        1: storage.type.sub.perl6
+        2: entity.name.function.perl6
+        3: storage.type.method.perl6
+      push: function-definition
+    - match: \b(is)\b
+      scope: support.function.perl6
+    - match: \b(export|unit|module)\b
+      scope: storage.modifier.perl6
+
+  string:
+    - meta_scope: string.quoted.double.perl6
+    - match: \\.
+      scope: constant.character.escape.perl6
+    - match: '"'
+      pop: true
+
+  function-definition:
+    - match: '[\w|\_][\w|\d|-]+[\w|_]'
+      scope: entity.name.function.perl6
+    - match: '\('
+      set: function-definition-params
+      pop: true
+
+  function-definition-params:
+    - meta_content_scope: meta.function.perl6
+    - match: \bInt:D\b
+      scope: variable.parameter.perl6
+    - match: '\)'
+      pop: true
