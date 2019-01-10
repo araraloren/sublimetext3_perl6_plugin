@@ -7,23 +7,37 @@ file_extensions:
 scope: source.perl6
 first_line_match: use v6;
 
+variables:
+  identifier: '[\w|\_][\w|\d|-]+[\w|_]'
+  basic_types: 'Int|Str'
+  function_types: 'sub|method'
+  data_structure_types: 'class'
+  storage_modifiers_types: 'export|unit|module'
+  control_keywords: 'if|unless|with|for|given|loop|when|default'
+
 contexts:
   main:
-    - match: \b(if|unless|with|for|given|loop)\b
+    - include: comment
+    - match: \b({{control_keywords}})\b
       scope: keyword.control.perl6
     - match: '"'
       push: string
-    - match: \b(sub)\b
+    - match: \b({{function_types}})\b
       scope: meta.function.perl6
       captures:
         1: storage.type.sub.perl6
         2: entity.name.function.perl6
         3: storage.type.method.perl6
       push: function-definition
+#    - match: '[\$]{{identifier}}\.{{identifier}}'
+#      scope: meta.function-call.perl6
+#      push: function-call
     - match: \b(is)\b
       scope: support.function.perl6
-    - match: \b(export|unit|module)\b
+    - match: \b({{storage_modifiers_types}})\b
       scope: storage.modifier.perl6
+    - match: \b({{data_structure_types}})\b
+      scope: storage.type.perl6
 
   string:
     - meta_scope: string.quoted.double.perl6
@@ -33,15 +47,32 @@ contexts:
       pop: true
 
   function-definition:
-    - match: '[\w|\_][\w|\d|-]+[\w|_]'
-      scope: entity.name.function.perl6
+    - include: identifier
     - match: '\('
       set: function-definition-params
-      pop: true
 
   function-definition-params:
     - meta_content_scope: meta.function.perl6
-    - match: \bInt:D\b
+    - match: \b({{basic_types}}[:D]*)\b
       scope: variable.parameter.perl6
     - match: '\)'
       pop: true
+
+  function-call:
+    - match: '\.{{identifier}}'
+      scope: variable.function.member.perl6
+      pop: true
+
+  identifier:
+    - match: '{{identifier}}'
+      scope: entity.name.function.perl6
+
+  variable-types:
+    - match: \b({{basic_types}})\b
+
+  comment:
+    - match: '\#\`\['
+      meta_scope: comment.block.c++
+      push:
+        - match: ']'
+          pop: true
