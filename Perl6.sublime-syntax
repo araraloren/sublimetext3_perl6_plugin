@@ -4,11 +4,13 @@
 name: Perl6
 file_extensions:
   - [pm6, p6]
+  - [pl, pm, PL, PL6]
+  - t
 scope: source.perl6
-first_line_match: use v6;
+first_line_match: ^#!.*\bperl6\b|^use\s*v6\;.*
 
 variables:
-  identifier: '[\w|\_][\w|\d|-]+[\w|_]'
+  identifier: '[_\p{L}][\p{Nd}\p{L}\''-_]+[\p{Nd}\p{L}]|[_\p{L}][\p{Nd}\p{L}]|[_\p{L}]'
   basic_types: 'Int|Str'
   function_types: 'sub|method'
   data_structure_types: 'class'
